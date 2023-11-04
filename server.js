@@ -5,6 +5,7 @@ import errorHandler from "./middlewares/errHandler.js";
 import authRouter from "./routes/authRoute.js";
 import shelterRouter from "./routes/shelterRoute.js";
 import './db/mongo.js'
+import adminRouter from "./routes/adminRoute.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use("/auth", authRouter);
 app.use("/data", shelterRouter)
+app.use("/admin", adminRouter)
 
 app.use(errorHandler);
 
