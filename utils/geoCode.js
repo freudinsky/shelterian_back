@@ -1,4 +1,4 @@
-import { Client, Status } from "@google/maps";
+import { Client, Status } from "@googlemaps/google-maps-services-js";
 
 async function geocodeAddress(address, apiKey) {
 	const client = new Client({ key: apiKey });
