@@ -37,7 +37,7 @@ export const createDog = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						file.originalname
+						`${body.name}${index}`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -63,7 +63,7 @@ export const createCat = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						file.originalname
+						`${body.name}${index}`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -125,6 +125,7 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 		params: { id },
 		uid,
 	} = req;
+	const foundDog = await Dogs.findById(id);
 	const files = req.files;
 	let newImages = [];
 	if (files) {
@@ -133,7 +134,7 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						file.originalname
+						`${body.name}${index+ foundDog.images.length }`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -143,7 +144,7 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 			next(error);
 		}
 	}
-	const foundDog = await Dogs.findById(id);
+	
 
 	if (!foundDog) {
 		throw new ErrorResponse("Entry does not exist.", 404);
@@ -170,7 +171,7 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 		params: { id },
 		uid,
 	} = req;
-
+const foundCat = Cats.findById(id);
 	const files = req.files;
 	let newImages = [];
 	if (files) {
@@ -179,7 +180,7 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						file.originalname
+						`${body.name}${index + foundCat.images.length}`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -189,7 +190,6 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 			next(error);
 		}
 	}
-	const foundCat = Cats.findById(id);
 
 	if (!foundCat) {
 		throw new ErrorResponse("Entry does not exist.", 404);

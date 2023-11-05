@@ -6,8 +6,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 const storage = multer.memoryStorage();
 const fileName = (req, file, cb) => {
 	const originalname = file.originalname;
-	const filename =
-		originalname.split(".")[0] + "_" + Date.now();
+	const filename = originalname.split(".")[0] + "_" + Date.now();
 	cb(null, filename);
 };
 
@@ -30,7 +29,8 @@ const uploadToCloudinary = async (file, name) => {
 
 	const b64 = Buffer.from(file.buffer).toString("base64");
 	let dataURI = "data:" + file.mimetype + ";base64," + b64;
-	const pubname = name.split(".").slice(0, -1).join(".");
+	const pubname = name
+	//.split(".").slice(0, -1).join(".");
 
 	const cloudinaryResult = await cloudinary.uploader.upload(dataURI, {
 		resource_type: "auto",
@@ -38,6 +38,5 @@ const uploadToCloudinary = async (file, name) => {
 	});
 	return cloudinaryResult;
 };
-
 
 export { upload, uploadToCloudinary };
