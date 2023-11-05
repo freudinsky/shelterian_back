@@ -5,6 +5,8 @@ import ErrorResponse from "../utils/ErrResp.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import bcrypt from "bcrypt";
 import { upload, uploadToCloudinary } from "../middlewares/imageHandler.js";
+import { unlinkSync } from "fs";
+import fs from "fs";
 
 // GET
 
@@ -26,42 +28,50 @@ export const getMyData = asyncHandler(async (req, res, next) => {
 // POST
 
 export const createDog = asyncHandler(async (req, res, next) => {
-	const { body, uid, files } = req;
-
+	const { body, uid } = req;
+	const files = req.files;
 	let images = [];
-
 	if (files) {
-		images = await Promise.all(
-			files.map(async (file) => {
-				const cloudinaryResult = await uploadToCloudinary(
-					file.buffer,
-					`${body.name}${index}`
-				);
-				return cloudinaryResult.secure_url;
-			})
-		);
+		try {
+			images = await Promise.all(
+				files.map(async (file, index) => {
+					const cloudinaryResult = await uploadToCloudinary(
+						file,
+						file.originalname
+					);
+					return cloudinaryResult.secure_url;
+				})
+			);
+		} catch (error) {
+			console.log(error);
+			next(error);
+		}
 	}
 
-	const newDog = await Dogs.create({ ...body, shelter: uid, images: images });
+	const newDog = await Dogs.create({ ...body, shelter: uid, images });
 	const fullDogEntry = await Dogs.findById(newDog._id);
 	res.status(201).json(fullDogEntry);
 });
 
 export const createCat = asyncHandler(async (req, res, next) => {
-	const { body, uid, files } = req;
-
+	const { body, uid } = req;
+	const files = req.files;
 	let images = [];
-
 	if (files) {
-		images = await Promise.all(
-			files.map(async (file, index) => {
-				const cloudinaryResult = await uploadToCloudinary(
-					file.buffer,
-					`${body.name}${index}`
-				);
-				return cloudinaryResult.secure_url;
-			})
-		);
+		try {
+			images = await Promise.all(
+				files.map(async (file, index) => {
+					const cloudinaryResult = await uploadToCloudinary(
+						file,
+						file.originalname
+					);
+					return cloudinaryResult.secure_url;
+				})
+			);
+		} catch (error) {
+			console.log(error);
+			next(error);
+		}
 	}
 
 	const newCat = await Cats.create({ ...body, shelter: uid, images: images });
@@ -114,23 +124,25 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 		body,
 		params: { id },
 		uid,
-		files,
 	} = req;
-
+	const files = req.files;
 	let newImages = [];
-
 	if (files) {
-		newImages = await Promise.all(
-			files.map(async (file) => {
-				const cloudinaryResult = await uploadToCloudinary(
-					file.buffer,
-					`${body.name}${index * 20}`
-				);
-				return cloudinaryResult.secure_url;
-			})
-		);
+		try {
+			newImages = await Promise.all(
+				files.map(async (file, index) => {
+					const cloudinaryResult = await uploadToCloudinary(
+						file,
+						file.originalname
+					);
+					return cloudinaryResult.secure_url;
+				})
+			);
+		} catch (error) {
+			console.log(error);
+			next(error);
+		}
 	}
-
 	const foundDog = await Dogs.findById(id);
 
 	if (!foundDog) {
@@ -157,23 +169,26 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 		body,
 		params: { id },
 		uid,
-		files,
 	} = req;
 
+	const files = req.files;
 	let newImages = [];
-
 	if (files) {
-		newImages = await Promise.all(
-			files.map(async (file) => {
-				const cloudinaryResult = await uploadToCloudinary(
-					file.buffer,
-					`${body.name}${index * 20}`
-				);
-				return cloudinaryResult.secure_url;
-			})
-		);
+		try {
+			newImages = await Promise.all(
+				files.map(async (file, index) => {
+					const cloudinaryResult = await uploadToCloudinary(
+						file,
+						file.originalname
+					);
+					return cloudinaryResult.secure_url;
+				})
+			);
+		} catch (error) {
+			console.log(error);
+			next(error);
+		}
 	}
-
 	const foundCat = Cats.findById(id);
 
 	if (!foundCat) {

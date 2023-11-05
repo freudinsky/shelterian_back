@@ -1,6 +1,7 @@
 import { Router } from "express";
-import jwtVerify from "../middlewares/jwtVerify.js";
 import * as adminController from "../controller/adminController.js";
+import jwtVerify from "../middlewares/jwtVerify.js";
+
 
 const adminRouter = Router();
 

@@ -6,6 +6,7 @@ import authRouter from "./routes/authRoute.js";
 import shelterRouter from "./routes/shelterRoute.js";
 import './db/mongo.js'
 import adminRouter from "./routes/adminRoute.js";
+import { upload } from "./middlewares/imageHandler.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -13,6 +14,7 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
+app.use(upload.array("images[]"));
 
 app.use("/auth", authRouter);
 app.use("/data", shelterRouter)
