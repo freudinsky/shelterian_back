@@ -47,6 +47,11 @@ const shelterSchema = new mongoose.Schema({
 		required: [true, "Passwort benötigt."],
         select: false,
 	},
+	adoptionTerms: {
+		type: String,
+	}
 });
+
+shelterSchema.index({ location: "2dsphere" });
 
 export default mongoose.model("Shelter", shelterSchema);

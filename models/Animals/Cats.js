@@ -23,7 +23,8 @@ const catSchema = new mongoose.Schema({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Shelter",
 	},
-	charesteristics: characteristicsSchema,
+	characteristics: characteristicsSchema,
+	images: [String],
 });
 
 export default mongoose.model("Cats", catSchema);

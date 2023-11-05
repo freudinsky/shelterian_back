@@ -4,40 +4,68 @@ import Shelter from "../models/Shelter.js";
 import ErrorResponse from "../utils/ErrResp.js";
 import asyncHandler from "../utils/asyncHandler.js";
 import bcrypt from "bcrypt";
+import { upload, uploadToCloudinary } from "../middlewares/imageHandler.js";
 
 // GET
 
 export const getMyAnimals = asyncHandler(async (req, res, next) => {
 	const { uid } = req;
-	const dogs = await Dogs.find({ uid }).populate("shelter");
-	const cats = await Cats.find({ uid }).populate("shelter");
+	const dogs = await Dogs.find({ shelter: uid });
+	const cats = await Cats.find({ shelter: uid });
 
 	res.status(201).json({ dogs: dogs, cats: cats });
 });
 
-export const getMyData = asyncHandler(async(req, res, next) => {
-	const {uid} = req;
+export const getMyData = asyncHandler(async (req, res, next) => {
+	const { uid } = req;
 
-	const shelterData = Shelter.findById(uid)
-
-	res.status(201).json(shelterData)
-} )
+	const shelterData = await Shelter.findById(uid);
+	res.status(201).json(shelterData);
+});
 
 // POST
 
 export const createDog = asyncHandler(async (req, res, next) => {
-	const { body, uid } = req;
+	const { body, uid, files } = req;
 
-	const newDog = await Dogs.create({ ...body, shelter: uid });
-	const fullDogEntry = await Dogs.findById(newDog._id).populate("shelter");
+	let images = [];
+
+	if (files) {
+		images = await Promise.all(
+			files.map(async (file) => {
+				const cloudinaryResult = await uploadToCloudinary(
+					file.buffer,
+					`${body.name}${index}`
+				);
+				return cloudinaryResult.secure_url;
+			})
+		);
+	}
+
+	const newDog = await Dogs.create({ ...body, shelter: uid, images: images });
+	const fullDogEntry = await Dogs.findById(newDog._id);
 	res.status(201).json(fullDogEntry);
 });
 
 export const createCat = asyncHandler(async (req, res, next) => {
-	const { body, uid } = req;
+	const { body, uid, files } = req;
 
-	const newCat = await Cats.create({ ...body, shelter: uid });
-	const fullCatEntry = await Cats.findById(newCat._id).populate("shelter");
+	let images = [];
+
+	if (files) {
+		images = await Promise.all(
+			files.map(async (file, index) => {
+				const cloudinaryResult = await uploadToCloudinary(
+					file.buffer,
+					`${body.name}${index}`
+				);
+				return cloudinaryResult.secure_url;
+			})
+		);
+	}
+
+	const newCat = await Cats.create({ ...body, shelter: uid, images: images });
+	const fullCatEntry = await Cats.findById(newCat._id);
 	res.status(201).json(fullCatEntry);
 });
 
@@ -66,6 +94,10 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
 
 	const passwordConfirm = await bcrypt.compare(oldPassword, shelter.password);
 
+	if (!passwordConfirm) {
+		throw new ErrorResponse("Incorrect Password!", 401);
+	}
+
 	if (newPassword !== confirmPassword) {
 		throw new ErrorResponse("New passwords don't match.", 400);
 	}
@@ -82,19 +114,41 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 		body,
 		params: { id },
 		uid,
+		files,
 	} = req;
 
-	const foundDog = Dogs.findById(id);
+	let newImages = [];
+
+	if (files) {
+		newImages = await Promise.all(
+			files.map(async (file) => {
+				const cloudinaryResult = await uploadToCloudinary(
+					file.buffer,
+					`${body.name}${index * 20}`
+				);
+				return cloudinaryResult.secure_url;
+			})
+		);
+	}
+
+	const foundDog = await Dogs.findById(id);
 
 	if (!foundDog) {
 		throw new ErrorResponse("Entry does not exist.", 404);
 	}
-	if (uid !== foundDog.shelter.toString())
-		throw new ErrorResponse("No permisson.", 401);
+	if (uid != foundDog.shelter) throw new ErrorResponse("No permisson.", 401);
 
-	const updatedDog = await Dogs.findByIdAndUpdate(id, body, {
+	const update = {
+		$push: { images: { $each: newImages } },
+		name: body.name,
+		age: body.age,
+		breed: body.breed,
+		characteristics: body.characteristics,
+	};
+
+	const updatedDog = await Dogs.findByIdAndUpdate(id, update, {
 		new: true,
-	}).populate("shelter");
+	});
 	res.status(201).json(updatedDog);
 });
 
@@ -103,7 +157,22 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 		body,
 		params: { id },
 		uid,
+		files,
 	} = req;
+
+	let newImages = [];
+
+	if (files) {
+		newImages = await Promise.all(
+			files.map(async (file) => {
+				const cloudinaryResult = await uploadToCloudinary(
+					file.buffer,
+					`${body.name}${index * 20}`
+				);
+				return cloudinaryResult.secure_url;
+			})
+		);
+	}
 
 	const foundCat = Cats.findById(id);
 
@@ -113,8 +182,15 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 	if (uid !== foundCat.shelter.toString())
 		throw new ErrorResponse("No permission.", 401);
 
-	const updatedCat = await Cats.findByIdAndUpdate(id, body, {
-		new: true,
-	}).populate("shelter");
+	const update = {
+		$push: { images: { $each: newImages } },
+		name: body.name,
+		age: body.age,
+		breed: body.breed,
+		characteristics: body.characteristics,
+	};
+
+	const updatedCat = await Cats.findByIdAndUpdate(id, update, { new: true });
+
 	res.status(201).json(updatedCat);
 });

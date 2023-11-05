@@ -8,7 +8,7 @@ import { geocodeAddress } from "../utils/geoCode.js";
 //Registration
 
 export const signUp = asyncHandler(async (req, res, next) => {
-	const { name, refPerson, address, postcode, city, country, email, password } =
+	const { name, refPerson, address, postcode, city, country, email, password, terms } =
 		req.body;
 
 	const checkExisting = await Shelter.findOne({ name, email });
@@ -18,7 +18,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 
 	const addr = `${address}, ${city}, ${country}`;
 
-	const location = await geocodeAddress(addr, process.env.GOOGLE_MAPS_KEY);
+	const location = await geocodeAddress(addr);
 
 	const pwHash = await bcrypt.hash(password, 10);
 
@@ -35,6 +35,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 			type: "Point",
 			coordinates: [location.lng, location.lat],
 		},
+		adoptionTerms: terms,
 	});
 
 	res.status(201).send("success");
@@ -56,12 +57,14 @@ export const signIn = asyncHandler(async (req, res, next) => {
 
 	const cookie = jwt.sign({ uid: checkExisting._id }, process.env.JWT_SECRET);
 	res.cookie("authtoken", cookie, { httpOnly: true, maxAge: 10800000 });
+	res.status(200).send({ status: "success" });
 });
 
 //Get Shelter Data
 
 export const shelterData = asyncHandler(async (req, res, next) => {
-	const shelter = await Shelter.findOne(req.uid);
+	const uid = req.uid;
+	const shelter = await Shelter.findOne({ _id: uid });
 	res.json(shelter);
 });
 
@@ -69,5 +72,5 @@ export const shelterData = asyncHandler(async (req, res, next) => {
 
 export const signout = asyncHandler(async (req, res, next) => {
 	res.clearCookie("authtoken");
-	res.status(200).send({ message: success });
+	res.status(200).send({ message: "success" });
 });
