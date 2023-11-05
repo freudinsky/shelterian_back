@@ -1,12 +1,10 @@
-import Dogs from "../models/Animals/Dogs.js";
+import bcrypt from "bcrypt";
+import { uploadToCloudinary } from "../middlewares/imageHandler.js";
 import Cats from "../models/Animals/Cats.js";
+import Dogs from "../models/Animals/Dogs.js";
 import Shelter from "../models/Shelter.js";
 import ErrorResponse from "../utils/ErrResp.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import bcrypt from "bcrypt";
-import { upload, uploadToCloudinary } from "../middlewares/imageHandler.js";
-import { unlinkSync } from "fs";
-import fs from "fs";
 
 // GET
 
