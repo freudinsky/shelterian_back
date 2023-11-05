@@ -18,7 +18,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 
 	const addr = `${address}, ${city}, ${country}`;
 
-	const location = await geocodeAddress(addr);
+	const location = await geocodeAddress(addr, process.env.GOOGLE_MAPS_KEY);
 
 	const pwHash = await bcrypt.hash(password, 10);
 
