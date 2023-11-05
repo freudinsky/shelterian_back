@@ -20,7 +20,7 @@ export const filterDogs = asyncHandler(async (req, res, next) => {
     const { city, dist, chld, lgplc, catfr, exp, dogfr } = req.query;
     const query = {};
 	if (city) {
-		const location = await geocodeAddress(city);
+		const location = await geocodeAddress(city, process.env.GOOGLE_MAPS_KEY);
 		const locationPoint = {
 			type: "Point",
 			coordinates: [location.lng, location.lat],
@@ -74,7 +74,7 @@ export const filterCats = asyncHandler(async (req, res, next) => {
 	const { city, dist, chld, catfr, dogfr } = req.query;
     const query = {};
 	if (city) {
-		const location = await geocodeAddress(city);
+		const location = await geocodeAddress(city, process.env.GOOGLE_MAPS_KEY);
 		const locationPoint = {
 			type: "Point",
 			coordinates: [location.lng, location.lat],
