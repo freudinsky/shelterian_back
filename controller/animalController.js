@@ -8,12 +8,12 @@ import { geocodeAddress } from "../utils/geoCode.js";
 // GET
 
 export const allDogs = asyncHandler(async (req, res, next) => {
-	const dogs = await Dogs.find();
+	const dogs = await Dogs.find().sort({timestamp: -1});
 	res.json(dogs);
 });
 
 export const allCats = asyncHandler(async (req, res, next) => {
-	const cats = await Cats.find();
+	const cats = await Cats.find().sort({timestamp: -1});
 	res.json(cats);
 });
 
@@ -54,7 +54,7 @@ export const filterDogs = asyncHandler(async (req, res, next) => {
 		query["characteristics.dogFriendly"] = true;
 	}
 	try {
-		const dogs = await Dogs.find(query);
+		const dogs = await Dogs.find(query).sort({ timestamp: -1 });
 		console.log(query)
 		res.json(dogs);
 	} catch (err) {
@@ -93,7 +93,7 @@ export const filterCats = asyncHandler(async (req, res, next) => {
 		query["characteristics.dogFriendly"] = true;
 	}
 	try {
-		const cats = await Cats.find(query);
+		const cats = await Cats.find(query).sort({ timestamp: -1 });
 		res.json(cats);
 	} catch (err) {
 		throw new ErrorResponse(err);

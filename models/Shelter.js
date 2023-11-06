@@ -49,7 +49,8 @@ const shelterSchema = new mongoose.Schema({
 	},
 	adoptionTerms: {
 		type: String,
-	}
+	},
+	timestamp: Date
 });
 
 shelterSchema.index({ location: "2dsphere" });

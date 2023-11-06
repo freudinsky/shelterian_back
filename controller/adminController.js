@@ -10,8 +10,8 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 export const getMyAnimals = asyncHandler(async (req, res, next) => {
 	const { uid } = req;
-	const dogs = await Dogs.find({ shelter: uid });
-	const cats = await Cats.find({ shelter: uid });
+	const dogs = await Dogs.find({ shelter: uid }).sort({ timestamp: -1 });
+	const cats = await Cats.find({ shelter: uid }).sort({ timestamp: -1 });
 
 	res.status(201).json({ dogs: dogs, cats: cats });
 });
@@ -46,7 +46,12 @@ export const createDog = asyncHandler(async (req, res, next) => {
 		}
 	}
 
-	const newDog = await Dogs.create({ ...body, shelter: uid, images });
+	const newDog = await Dogs.create({
+		...body,
+		shelter: uid,
+		images,
+		timestamp: Date.now(),
+	});
 	const fullDogEntry = await Dogs.findById(newDog._id);
 	res.status(201).json(fullDogEntry);
 });
@@ -72,7 +77,12 @@ export const createCat = asyncHandler(async (req, res, next) => {
 		}
 	}
 
-	const newCat = await Cats.create({ ...body, shelter: uid, images: images });
+	const newCat = await Cats.create({
+		...body,
+		shelter: uid,
+		images: images,
+		timestamp: Date.now(),
+	});
 	const fullCatEntry = await Cats.findById(newCat._id);
 	res.status(201).json(fullCatEntry);
 });
@@ -132,7 +142,7 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						`${body.name}${index+ foundDog.images.length }`
+						`${body.name}${index + foundDog.images.length}`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -142,7 +152,6 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 			next(error);
 		}
 	}
-	
 
 	if (!foundDog) {
 		throw new ErrorResponse("Entry does not exist.", 404);
@@ -155,6 +164,7 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 		age: body.age,
 		breed: body.breed,
 		characteristics: body.characteristics,
+		lastchanged: Date.now(),
 	};
 
 	const updatedDog = await Dogs.findByIdAndUpdate(id, update, {
@@ -169,7 +179,7 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 		params: { id },
 		uid,
 	} = req;
-const foundCat = Cats.findById(id);
+	const foundCat = Cats.findById(id);
 	const files = req.files;
 	let newImages = [];
 	if (files) {
@@ -201,6 +211,7 @@ const foundCat = Cats.findById(id);
 		age: body.age,
 		breed: body.breed,
 		characteristics: body.characteristics,
+		lastchanged: Date.now(),
 	};
 
 	const updatedCat = await Cats.findByIdAndUpdate(id, update, { new: true });

@@ -28,6 +28,8 @@ const dogSchema = new mongoose.Schema({
 	},
 	characteristics: characteristicsSchema,
 	images: [String],
+	timestamp: Date,
+	lastchanged: Date,
 });
 
 export default mongoose.model("Dogs", dogSchema)

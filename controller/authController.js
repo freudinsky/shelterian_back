@@ -36,6 +36,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 			coordinates: [location.lng, location.lat],
 		},
 		adoptionTerms: terms,
+		timestamp: Date.now(),
 	});
 
 	res.status(201).send("success");
