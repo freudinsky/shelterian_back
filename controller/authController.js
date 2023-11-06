@@ -66,7 +66,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
 export const shelterData = asyncHandler(async (req, res, next) => {
 	const uid = req.uid;
 	const shelter = await Shelter.findOne({ _id: uid });
-	res.json(shelter);
+	res.status(200).json(shelter);
 });
 
 // Logout
