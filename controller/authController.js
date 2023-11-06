@@ -57,8 +57,11 @@ export const signIn = asyncHandler(async (req, res, next) => {
 	}
 
 	const cookie = jwt.sign({ uid: checkExisting._id }, process.env.JWT_SECRET);
-	res.cookie("authtoken", cookie, { httpOnly: true, maxAge: 10800000 });
-	res.status(200).send({ status: "success" });
+	res
+		.status(200)
+		.send({ status: "success" })
+		.cookie("authtoken", cookie, { httpOnly: true, maxAge: 10800000 });
+	
 });
 
 //Get Shelter Data
