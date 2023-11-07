@@ -163,6 +163,7 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 		name: body.name,
 		age: body.age,
 		breed: body.breed,
+		description: body.description,
 		characteristics: body.characteristics,
 		lastchanged: Date.now(),
 	};
@@ -210,6 +211,7 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 		name: body.name,
 		age: body.age,
 		breed: body.breed,
+		description: body.description,
 		characteristics: body.characteristics,
 		lastchanged: Date.now(),
 	};

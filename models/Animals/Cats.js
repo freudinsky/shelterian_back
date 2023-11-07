@@ -19,6 +19,9 @@ const catSchema = new mongoose.Schema({
 		type: String,
 		required: [true, "Rasse benötigt."],
 	},
+	description: {
+		type: String,
+	},
 	shelter: {
 		type: mongoose.Schema.Types.ObjectId,
 		ref: "Shelter",
