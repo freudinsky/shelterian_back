@@ -53,7 +53,7 @@ console.log(req.body)
 		adoptionTerms: terms,
 		timestamp: Date.now(),
 	});
-
+const cookie = jwt.sign({uid: newShelter._id}, process.env.JWT_SECRET)
 	res.status(201).send("success");
 });
 
