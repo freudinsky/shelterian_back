@@ -8,8 +8,17 @@ import { geocodeAddress } from "../utils/geoCode.js";
 //Registration
 
 export const signUp = asyncHandler(async (req, res, next) => {
-	const { name, refPerson, address, postcode, city, country, email, password, terms } =
-		req.body;
+	const {
+		name,
+		refPerson,
+		address,
+		postcode,
+		city,
+		country,
+		email,
+		password,
+		terms,
+	} = req.body;
 
 	const checkExisting = await Shelter.findOne({ name, email });
 	if (checkExisting) {
@@ -57,11 +66,13 @@ export const signIn = asyncHandler(async (req, res, next) => {
 	}
 
 	const cookie = jwt.sign({ uid: checkExisting._id }, process.env.JWT_SECRET);
-	res
-		.status(200)
-		.send({ status: "success" })
-		.cookie("authtoken", cookie, { sameSite: "None", httpOnly: true, maxAge: 10800000, secure:true });
-	
+	res.cookie("authtoken", cookie, {
+		sameSite: "None",
+		httpOnly: true,
+		maxAge: 10800000,
+		secure: true,
+	});
+	res.status(200).send({ status: "success" });
 });
 
 //Get Shelter Data
