@@ -69,7 +69,6 @@ export const signIn = asyncHandler(async (req, res, next) => {
 	}
 
 	const cookie = jwt.sign({ uid: checkExisting._id }, process.env.JWT_SECRET);
-	const auth = true;
 	res.cookie("authtoken", cookie, {
 		sameSite: "None",
 		httpOnly: true,
