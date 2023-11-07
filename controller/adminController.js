@@ -220,3 +220,45 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 
 	res.status(201).json(updatedCat);
 });
+
+export const deleteDog = asyncHandler(async (req, res, next) => {
+	const {
+		uid,
+		params: { id },
+	} = req;
+
+	
+
+	const foundDog = await Dogs.findById(id);
+
+
+	if (!foundDog) {
+		throw new ErrorResponse("Nicht gefunden.", 404);
+	}
+
+	if (foundDog.shelter.toString() !== uid) {
+		throw new ErrorResponse("Nicht erlaubt.", 401);
+	}
+
+	await Dogs.findByIdAndDelete(id);
+	res.status(201).send("success");
+});
+
+export const deleteCat = asyncHandler(async (req, res, next) => {
+	const {
+		uid,
+		params: { id },
+	} = req;
+	const foundCat = await Cats.findById(id);
+
+	if (!foundCat) {
+		throw new ErrorResponse("Nicht gefunden.", 404);
+	}
+
+	if (foundCat.shelter.toString() !== uid) {
+		throw new ErrorResponse("Nicht erlaubt.", 401);
+	}
+
+	await Cats.findByIdAndDelete(id);
+	res.status(201).send("success");
+});

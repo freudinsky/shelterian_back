@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import errorHandler from "./middlewares/errHandler.js";
 import authRouter from "./routes/authRoute.js";
 import shelterRouter from "./routes/shelterRoute.js";
-import './db/mongo.js'
+import "./db/mongo.js";
 import adminRouter from "./routes/adminRoute.js";
 import { upload } from "./middlewares/imageHandler.js";
 
@@ -22,8 +22,8 @@ app.use(express.json());
 app.use(upload.array("images[]"));
 
 app.use("/auth", authRouter);
-app.use("/data", shelterRouter)
-app.use("/admin", adminRouter)
+app.use("/data", shelterRouter);
+app.use("/admin", adminRouter);
 
 app.use(errorHandler);
 
