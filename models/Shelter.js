@@ -37,6 +37,9 @@ const shelterSchema = new mongoose.Schema({
 		type: String,
 		required: [true, "Land benötigt."],
 	},
+	phone:{
+		type: Number,
+	},
 	email: {
 		type: String,
 		required: [true, "E-Mail Adresse benötigt."],
