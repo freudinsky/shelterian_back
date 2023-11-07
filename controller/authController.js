@@ -97,5 +97,6 @@ export const shelterData = asyncHandler(async (req, res, next) => {
 
 export const signout = asyncHandler(async (req, res, next) => {
 	res.clearCookie("authtoken");
+	res.clearCookie("auth");
 	res.status(200).send({ message: "success" });
 });
