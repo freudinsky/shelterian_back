@@ -60,7 +60,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
 	res
 		.status(200)
 		.send({ status: "success" })
-		.cookie("authtoken", cookie, { httpOnly: true, maxAge: 10800000 });
+		.cookie("authtoken", cookie, { sameSite: "none", httpOnly: true, maxAge: 10800000 });
 	
 });
 
