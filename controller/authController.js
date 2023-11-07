@@ -76,11 +76,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
 		maxAge: 10800000,
 		secure: true,
 	});
-	res.cookie("auth", auth, {
-		maxAge: 10800000,
-		sameSite: "None",
-		secure: true,
-	});
+	
 	res.status(200).send({ status: "success" });
 });
 
@@ -97,6 +93,5 @@ export const shelterData = asyncHandler(async (req, res, next) => {
 
 export const signout = asyncHandler(async (req, res, next) => {
 	res.clearCookie("authtoken");
-	res.clearCookie("auth");
 	res.status(200).send({ message: "success" });
 });
