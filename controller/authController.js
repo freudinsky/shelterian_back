@@ -21,9 +21,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 		terms,
 	} = req.body;
 
-
-console.log(req.body)
-
+	console.log(req.body);
 
 	const checkExisting = await Shelter.findOne({ name, email });
 	if (checkExisting) {
@@ -53,7 +51,7 @@ console.log(req.body)
 		adoptionTerms: terms,
 		timestamp: Date.now(),
 	});
-const cookie = jwt.sign({uid: newShelter._id}, process.env.JWT_SECRET)
+	const cookie = jwt.sign({ uid: newShelter._id }, process.env.JWT_SECRET);
 	res.status(201).send("success");
 });
 
