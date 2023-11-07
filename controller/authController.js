@@ -51,7 +51,6 @@ export const signUp = asyncHandler(async (req, res, next) => {
 		adoptionTerms: terms,
 		timestamp: Date.now(),
 	});
-	const cookie = jwt.sign({ uid: newShelter._id }, process.env.JWT_SECRET);
 	res.status(201).send("success");
 });
 
@@ -70,10 +69,16 @@ export const signIn = asyncHandler(async (req, res, next) => {
 	}
 
 	const cookie = jwt.sign({ uid: checkExisting._id }, process.env.JWT_SECRET);
+	const auth = true;
 	res.cookie("authtoken", cookie, {
 		sameSite: "None",
 		httpOnly: true,
 		maxAge: 10800000,
+		secure: true,
+	});
+	res.cookie("auth", auth, {
+		maxAge: 10800000,
+		sameSite: "None",
 		secure: true,
 	});
 	res.status(200).send({ status: "success" });
@@ -84,6 +89,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
 export const shelterData = asyncHandler(async (req, res, next) => {
 	const uid = req.uid;
 	const shelter = await Shelter.findOne({ _id: uid });
+	console.log(shelter);
 	res.status(200).json(shelter);
 });
 
