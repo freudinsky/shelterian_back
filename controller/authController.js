@@ -21,6 +21,10 @@ export const signUp = asyncHandler(async (req, res, next) => {
 		terms,
 	} = req.body;
 
+
+console.log(req.body)
+
+
 	const checkExisting = await Shelter.findOne({ name, email });
 	if (checkExisting) {
 		throw new ErrorResponse("Shelter already registered.", 409);
