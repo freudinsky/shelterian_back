@@ -8,13 +8,13 @@ import { geocodeAddress } from "../utils/geoCode.js";
 // GET
 
 export const allDogs = asyncHandler(async (req, res, next) => {
-	const dogs = await Dogs.find().sort({timestamp: -1});
-	res.json(dogs);
+	const dogs = await Dogs.find().sort({ timestamp: -1 });
+	res.status(200).json(dogs);
 });
 
 export const allCats = asyncHandler(async (req, res, next) => {
-	const cats = await Cats.find().sort({timestamp: -1});
-	res.json(cats);
+	const cats = await Cats.find().sort({ timestamp: -1 });
+	res.status(200).json(cats);
 });
 
 export const filterDogs = asyncHandler(async (req, res, next) => {
@@ -55,8 +55,8 @@ export const filterDogs = asyncHandler(async (req, res, next) => {
 	}
 	try {
 		const dogs = await Dogs.find(query).sort({ timestamp: -1 });
-		console.log(query)
-		res.json(dogs);
+
+		res.status(200).json(dogs);
 	} catch (err) {
 		throw new ErrorResponse(err);
 	}
@@ -94,7 +94,7 @@ export const filterCats = asyncHandler(async (req, res, next) => {
 	}
 	try {
 		const cats = await Cats.find(query).sort({ timestamp: -1 });
-		res.json(cats);
+		res.status(200).json(cats);
 	} catch (err) {
 		throw new ErrorResponse(err);
 	}
@@ -102,18 +102,18 @@ export const filterCats = asyncHandler(async (req, res, next) => {
 
 export const getDogById = asyncHandler(async (req, res, next) => {
 	const { id } = req.params;
-	const dog = await Dogs.findById(id);
+	const dog = await Dogs.findById(id).populate('shelter');
 	if (!dog) {
 		throw new ErrorResponse("Entry does not exist.", 404);
 	}
-	res.json(dog);
+	res.status(200).json(dog);
 });
 
 export const getCatById = asyncHandler(async (req, res, next) => {
 	const { id } = req.params;
-	const cat = await Cats.findById(id);
+	const cat = await Cats.findById(id).populate('shelter');
 	if (!cat) {
 		throw new ErrorResponse("Entry does not exist.", 404);
 	}
-	res.json(cat);
+	res.status(200).json(cat);
 });
