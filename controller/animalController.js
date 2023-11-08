@@ -56,6 +56,9 @@ export const filterDogs = asyncHandler(async (req, res, next) => {
 	try {
 		const dogs = await Dogs.find(query).sort({ timestamp: -1 });
 
+		console.log(query);
+		console.log(req.query);
+		console.log(dogs);
 		res.status(200).json(dogs);
 	} catch (err) {
 		throw new ErrorResponse(err);
@@ -102,7 +105,7 @@ export const filterCats = asyncHandler(async (req, res, next) => {
 
 export const getDogById = asyncHandler(async (req, res, next) => {
 	const { id } = req.params;
-	const dog = await Dogs.findById(id).populate('shelter');
+	const dog = await Dogs.findById(id).populate("shelter");
 	if (!dog) {
 		throw new ErrorResponse("Entry does not exist.", 404);
 	}
@@ -111,7 +114,7 @@ export const getDogById = asyncHandler(async (req, res, next) => {
 
 export const getCatById = asyncHandler(async (req, res, next) => {
 	const { id } = req.params;
-	const cat = await Cats.findById(id).populate('shelter');
+	const cat = await Cats.findById(id).populate("shelter");
 	if (!cat) {
 		throw new ErrorResponse("Entry does not exist.", 404);
 	}

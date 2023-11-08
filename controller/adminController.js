@@ -227,10 +227,7 @@ export const deleteDog = asyncHandler(async (req, res, next) => {
 		params: { id },
 	} = req;
 
-	
-
 	const foundDog = await Dogs.findById(id);
-
 
 	if (!foundDog) {
 		throw new ErrorResponse("Nicht gefunden.", 404);
