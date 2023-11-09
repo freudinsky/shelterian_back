@@ -7,7 +7,7 @@ const adminRouter = Router();
 
 adminRouter.use(jwtVerify);
 adminRouter.use(upload.array("images[]"));
-adminRouter.use(upload.single("adoptionTerms"));
+
 
 adminRouter.get("/myentries", adminController.getMyAnimals);
 adminRouter.get("/mydata", adminController.getMyData);

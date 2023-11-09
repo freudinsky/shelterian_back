@@ -5,8 +5,6 @@ import { upload } from "../middlewares/imageHandler.js";
 
 const authRouter = Router();
 
-authRouter.use(upload.single('adoptionTerms'))
-
 authRouter.post("/signup", authController.signUp);
 authRouter.post("/signin", authController.signIn);
 authRouter.post("/logout", jwtVerify, authController.signout);

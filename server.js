@@ -19,7 +19,7 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-
+app.use(upload.single("verifDoc"));
 
 app.use("/auth", authRouter);
 app.use("/data", shelterRouter);
