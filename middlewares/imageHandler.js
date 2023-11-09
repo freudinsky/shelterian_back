@@ -1,7 +1,5 @@
-import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
-import asyncHandler from "../utils/asyncHandler.js";
+import multer from "multer";
 
 const storage = multer.memoryStorage();
 const fileName = (req, file, cb) => {
@@ -51,4 +49,5 @@ const deleteFromCloudinary = async (images) =>{
 	return "images deleted"
 }
 
-export { upload, uploadToCloudinary, deleteFromCloudinary };
+export { deleteFromCloudinary, upload, uploadToCloudinary };
+
