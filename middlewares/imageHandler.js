@@ -1,5 +1,6 @@
-import { v2 as cloudinary } from "cloudinary";
 import multer from "multer";
+import { v2 as cloudinary } from "cloudinary";
+
 
 const storage = multer.memoryStorage();
 const fileName = (req, file, cb) => {
@@ -27,7 +28,7 @@ const uploadToCloudinary = async (file, name) => {
 
 	const b64 = Buffer.from(file.buffer).toString("base64");
 	let dataURI = "data:" + file.mimetype + ";base64," + b64;
-	const pubname = name
+	const pubname = name;
 
 	const cloudinaryResult = await cloudinary.uploader.upload(dataURI, {
 		resource_type: "auto",
@@ -37,17 +38,18 @@ const uploadToCloudinary = async (file, name) => {
 	return cloudinaryResult;
 };
 
-const deleteFromCloudinary = async (images) =>{
-	const public_ids = []
-		for (const img in images){
-		const urlSplit = img.split("/")
-		const filename = urlSplit[urlSplit.length - 1]
-		const pub_id = filename.split(".")[0]
-		public_ids.push(pub_id)
+const deleteFromCloudinary = async (images) => {
+	const public_ids = [];
+	for (const img in images) {
+		const urlSplit = img.split("/");
+		const filename = urlSplit[urlSplit.length - 1];
+		const pub_id = filename.split(".")[0];
+		public_ids.push(pub_id);
 	}
-	cloudinary.api.delete_resources(public_ids)
-	return "images deleted"
-}
+	cloudinary.api.delete_resources(public_ids);
+	return "images deleted";
+};
 
-export { deleteFromCloudinary, upload, uploadToCloudinary };
+
+export {uploadToCloudinary, deleteFromCloudinary, upload};
 
