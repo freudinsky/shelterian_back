@@ -6,7 +6,7 @@ const jwtVerify = asyncHandler(async (req, res, next) => {
     const token = req.cookies.authtoken
 
     if(!token){
-        throw new ErrorResponse("Not logged in", 204)
+        return
     }
 
     const jwtDecoded = jwt.verify(token, process.env.JWT_SECRET)

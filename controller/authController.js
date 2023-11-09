@@ -21,7 +21,6 @@ export const signUp = asyncHandler(async (req, res, next) => {
 		terms,
 	} = req.body;
 
-	console.log(req.body);
 
 	const checkExisting = await Shelter.findOne({ name, email });
 	if (checkExisting) {
@@ -84,6 +83,7 @@ export const signIn = asyncHandler(async (req, res, next) => {
 export const shelterData = asyncHandler(async (req, res, next) => {
 	const uid = req.uid;
 	const shelter = await Shelter.findOne({ _id: uid });
+
 	res.status(200).json(shelter);
 });
 

@@ -56,9 +56,6 @@ export const filterDogs = asyncHandler(async (req, res, next) => {
 	try {
 		const dogs = await Dogs.find(query).sort({ timestamp: -1 });
 
-		console.log(query);
-		console.log(req.query);
-		console.log(dogs);
 		res.status(200).json(dogs);
 	} catch (err) {
 		throw new ErrorResponse(err);
