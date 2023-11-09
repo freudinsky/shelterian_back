@@ -35,7 +35,7 @@ export const createDog = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						`${body.name}${index}`
+						`${body.name}${Date.now()}_${index}`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -66,7 +66,7 @@ export const createCat = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						`${body.name}${index}`
+						`${body.name}${Date.now()}_${index}`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -142,7 +142,7 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						`${body.name}${index + foundDog.images.length}`
+						`${body.name}${Date.now()}_${index + foundDog.images.length}`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -156,7 +156,8 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 	if (!foundDog) {
 		throw new ErrorResponse("Entry does not exist.", 404);
 	}
-	if (uid != foundDog.shelter) throw new ErrorResponse("No permisson.", 401);
+	if (uid != foundDog.shelter.toString())
+		throw new ErrorResponse("No permisson.", 401);
 
 	const update = {
 		$push: { images: { $each: newImages } },
@@ -180,7 +181,8 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 		params: { id },
 		uid,
 	} = req;
-	const foundCat = Cats.findById(id);
+	const foundCat = await Cats.findById(id);
+
 	const files = req.files;
 	let newImages = [];
 	if (files) {
@@ -189,7 +191,7 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 				files.map(async (file, index) => {
 					const cloudinaryResult = await uploadToCloudinary(
 						file,
-						`${body.name}${index + foundCat.images.length}`
+						`${body.name}${Date.now()}_${index + foundCat.images.length}`
 					);
 					return cloudinaryResult.secure_url;
 				})
@@ -199,7 +201,6 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 			next(error);
 		}
 	}
-
 	if (!foundCat) {
 		throw new ErrorResponse("Entry does not exist.", 404);
 	}

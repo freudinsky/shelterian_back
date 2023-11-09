@@ -13,7 +13,7 @@ const PORT = process.env.PORT;
 
 app.use(
 	cors({
-		origin: ["http://localhost:5173", "https://www.shelterian.com"],
+		origin: [process.env.CORS_LOCAL, process.env.CORS_ORIGIN],
 		credentials: true,
 	})
 );

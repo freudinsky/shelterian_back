@@ -37,23 +37,23 @@ const shelterSchema = new mongoose.Schema({
 		type: String,
 		required: [true, "Land benötigt."],
 	},
-	phone:{
-		type: Number,
+	phone: {
+		type: String,
 	},
 	email: {
 		type: String,
 		required: [true, "E-Mail Adresse benötigt."],
-        unique: true
+		unique: true,
 	},
 	password: {
 		type: String,
 		required: [true, "Passwort benötigt."],
-        select: false,
+		select: false,
 	},
 	adoptionTerms: {
 		type: String,
 	},
-	timestamp: Date
+	timestamp: Date,
 });
 
 shelterSchema.index({ location: "2dsphere" });
