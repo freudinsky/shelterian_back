@@ -1,7 +1,6 @@
 import { Router } from "express";
-import jwtVerify from "../middlewares/jwtVerify.js";
 import * as authController from "../controller/authController.js";
-import { upload } from "../middlewares/imageHandler.js";
+import jwtVerify from "../middlewares/jwtVerify.js";
 
 const authRouter = Router();
 
