@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 
 const characteristicsSchema = new mongoose.Schema({
-	childrenFriendly: Boolean,
 	catFriendly: Boolean,
 	dogFriendly: Boolean,
+	childrenFriendly: Boolean,
 });
 
 const catSchema = new mongoose.Schema({

@@ -75,7 +75,8 @@ export const signIn = asyncHandler(async (req, res, next) => {
 		secure: true,
 	});
 	
-	res.status(200).send({ status: "success" });
+	const shelter = await Shelter.findOne({ _id: checkExisting._id });
+	res.status(200).json(shelter);
 });
 
 //Get Shelter Data

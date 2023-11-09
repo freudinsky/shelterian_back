@@ -1,5 +1,8 @@
 import bcrypt from "bcrypt";
-import { uploadToCloudinary } from "../middlewares/imageHandler.js";
+import {
+	deleteFromCloudinary,
+	uploadToCloudinary,
+} from "../middlewares/imageHandler.js";
 import Cats from "../models/Animals/Cats.js";
 import Dogs from "../models/Animals/Dogs.js";
 import Shelter from "../models/Shelter.js";
@@ -239,6 +242,7 @@ export const deleteDog = asyncHandler(async (req, res, next) => {
 	}
 
 	await Dogs.findByIdAndDelete(id);
+	await deleteFromCloudinary(foundDog.images);
 	res.status(201).send("success");
 });
 
@@ -258,5 +262,6 @@ export const deleteCat = asyncHandler(async (req, res, next) => {
 	}
 
 	await Cats.findByIdAndDelete(id);
+	await deleteFromCloudinary(foundCat.images);
 	res.status(201).send("success");
 });

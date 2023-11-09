@@ -30,13 +30,25 @@ const uploadToCloudinary = async (file, name) => {
 	const b64 = Buffer.from(file.buffer).toString("base64");
 	let dataURI = "data:" + file.mimetype + ";base64," + b64;
 	const pubname = name
-	//.split(".").slice(0, -1).join(".");
 
 	const cloudinaryResult = await cloudinary.uploader.upload(dataURI, {
 		resource_type: "auto",
 		public_id: pubname,
+		eager: [{ effect: "upscale" }, { width: "4.0", crop: "scale" }],
 	});
 	return cloudinaryResult;
 };
 
-export { upload, uploadToCloudinary };
+const deleteFromCloudinary = async (images) =>{
+	const public_ids = []
+		for (const img in images){
+		const urlSplit = img.split("/")
+		const filename = urlSplit[urlSplit.length - 1]
+		const pub_id = filename.split(".")[0]
+		public_ids.push(pub_id)
+	}
+	cloudinary.api.delete_resources(public_ids)
+	return "images deleted"
+}
+
+export { upload, uploadToCloudinary, deleteFromCloudinary };
