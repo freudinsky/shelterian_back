@@ -1,10 +1,13 @@
 import { Router } from "express";
 import * as adminController from "../controller/adminController.js";
 import jwtVerify from "../middlewares/jwtVerify.js";
+import { upload } from "../middlewares/imageHandler.js";
 
 const adminRouter = Router();
 
 adminRouter.use(jwtVerify);
+adminRouter.use(upload.array("images[]"));
+adminRouter.use(upload.single("adoptionTerms"));
 
 adminRouter.get("/myentries", adminController.getMyAnimals);
 adminRouter.get("/mydata", adminController.getMyData);
