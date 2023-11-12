@@ -24,10 +24,10 @@ export const emailHtml = (
                     </p><p>Um deine Registrierung abzuschließen bestätige bitte deine E-Mail Adresse unter folgendem Link:
                 </p>
     		</div>
-            <div style="margin: 2rem auto; width: fit-content;"><a href="https://www.shelterian.com/auth/validation?email=${email}&token=${validationToken}" style="text-decoration: none; color: white; font-weight: 600; background-color: #AB4E68; padding: 10px 16px; border-radius: 30px;">E-Mail Adresse bestätigen</a></div>
+            <div style="margin: 2rem auto; width: fit-content;"><a href="https://www.shelterian.com/validation?email=${email}&token=${validationToken}" style="text-decoration: none; color: white; font-weight: 600; background-color: #AB4E68; padding: 10px 16px; border-radius: 30px;">E-Mail Adresse bestätigen</a></div>
             <div style="font-size: 0.9rem; opacity: 0.8;padding:0 0.7rem;">
                 <p>Falls der Button nicht funktionieren sollte, kopiere einfach folgenden Link in die Adresszeile deines Browsers:</p>
-                <p>https://www.shelterian.com/auth/validation?email=${email}&token=${validationToken}</p>
+                <p>https://www.shelterian.com/validation?email=${email}&token=${validationToken}</p>
             </div>
 		</main>
         <hr style="opacity: 0.4; margin: 2rem auto; width: 35%;">
