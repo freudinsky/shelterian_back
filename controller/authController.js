@@ -4,6 +4,9 @@ import asyncHandler from "../utils/asyncHandler.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { geocodeAddress } from "../utils/geoCode.js";
+import crypto from "crypto"
+import { sendEmail } from "../utils/gmailAPI.js";
+import { emailHtml } from "../email/EmailValidation.js";
 
 //Registration
 
@@ -33,6 +36,8 @@ export const signUp = asyncHandler(async (req, res, next) => {
 
 	const pwHash = await bcrypt.hash(password, 10);
 
+	const validationToken = (mail)=>{const token = crypto.createHmac("sha256", process.env.CRYPTO_SECRET).update(mail).digest("hex")}
+
 	const newShelter = await Shelter.create({
 		name,
 		refPerson,
@@ -49,9 +54,28 @@ export const signUp = asyncHandler(async (req, res, next) => {
 		},
 		adoptionTerms: terms,
 		timestamp: Date.now(),
+		emailValidationToken: validationToken(email)
 	});
+
+	const emailContent = emailHtml(refPerson || name, validationToken(email))
+	sendEmail(email, "Bestätigung deiner E-Mail-Adresse", emailContent);
 	res.status(201).send("success");
 });
+
+export const validateMail = asyncHandler(async(req,res, next) =>{
+	const {email, token} = req.params
+	const findShelter = await Shelter.findOne({email})
+
+	if(!findShelter){
+		throw new ErrorResponse("Account nicht gefunden.", 404)
+	}
+	if(token !== findShelter.emailValidationToken){
+		throw new ErrorResponse("Falscher token.", 400)
+	}
+
+	const validatedMail = await Shelter.findOneAndUpdate({email}, {mailValidated: true}, {new: true})
+	res.status(201).send("E-Mail erfolgreich bestätigt.")
+})
 
 //Login
 

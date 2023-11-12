@@ -9,5 +9,6 @@ authRouter.post("/signup", upload.single("verifDoc"), authController.signUp);
 authRouter.post("/signin", authController.signIn);
 authRouter.post("/logout", jwtVerify, authController.signout);
 authRouter.get("/shelterinfo", jwtVerify, authController.shelterData);
+authRouter.get("/validate/:email/:token", authController.validateMail)
 
 export default authRouter;
