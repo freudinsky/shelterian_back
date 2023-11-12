@@ -86,7 +86,6 @@ export const validateMail = asyncHandler(async (req, res, next) => {
 	const findShelter = await Shelter.findOne({ email }).select(
 		"+emailValidationToken"
 	);
-
 	if (!findShelter) {
 		throw new ErrorResponse("Account nicht gefunden.", 404);
 	}
