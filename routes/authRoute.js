@@ -10,5 +10,6 @@ authRouter.post("/signin", authController.signIn);
 authRouter.post("/logout", jwtVerify, authController.signout);
 authRouter.get("/shelterinfo", jwtVerify, authController.shelterData);
 authRouter.get("/validate", authController.validateMail)
+authRouter.get("/new-validation-link", authController.sendNewValidationLink)
 
 export default authRouter;

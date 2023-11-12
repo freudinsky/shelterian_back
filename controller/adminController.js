@@ -13,8 +13,12 @@ import asyncHandler from "../utils/asyncHandler.js";
 
 export const getMyAnimals = asyncHandler(async (req, res, next) => {
 	const { uid } = req;
-	const dogs = await Dogs.find({ shelter: uid }).sort({ timestamp: -1 });
-	const cats = await Cats.find({ shelter: uid }).sort({ timestamp: -1 });
+	const dogs = await Dogs.find({ shelter: uid })
+		.populate("shelter")
+		.sort({ timestamp: -1 });
+	const cats = await Cats.find({ shelter: uid })
+		.populate("shelter")
+		.sort({ timestamp: -1 });
 
 	res.status(201).json({ dogs: dogs, cats: cats });
 });

@@ -8,6 +8,12 @@ import crypto from "crypto";
 import { sendEmail } from "../utils/gmailAPI.js";
 import { emailHtml } from "../email/EmailValidation.js";
 
+function encodeSubjectToMIME(subject) {
+		const encodedSubject = `=?UTF-8?B?${Buffer.from(subject).toString(
+			"base64"
+		)}?=`;
+		return encodedSubject;
+	}
 //Registration
 
 export const signUp = asyncHandler(async (req, res, next) => {
@@ -69,17 +75,41 @@ export const signUp = asyncHandler(async (req, res, next) => {
 		validationToken(email)
 	);
 	const subject = "Bestätigung deiner E-Mail-Adresse";
-	function encodeSubjectToMIME(subject) {
-		const encodedSubject = `=?UTF-8?B?${Buffer.from(subject).toString(
-			"base64"
-		)}?=`;
-		return encodedSubject;
-	}
+	
 
 	const encodedSubject = encodeSubjectToMIME(subject);
 	sendEmail(email, encodedSubject, emailContent);
 	res.status(201).send("success");
 });
+
+export const sendNewValidationLink = asyncHandler(async (req,res,next) => {
+	const {email} = req.query;
+	const findShelter = await Shelter.findOne({ email }).select(
+		"+emailValidationToken"
+	);
+	if(!findShelter){
+		throw new ErrorResponse("Account nicht gefunden.", 404)
+	}
+
+	if(findShelter.mailValidated){
+		throw new ErrorResponse("E-Mail wurde bereits bestätigt.", 400)
+	}
+
+	const name = findShelter.name
+	const refPerson = findShelter.refPerson
+	const token = findShelter.emailValidationToken;
+	const emailContent = emailHtml(
+		refPerson || name,
+		refPerson ? name : "",
+		email,
+		token,
+	);
+
+	const subject = "Bestätigung deiner E-Mail-Adresse";
+	const encodedSubject = encodeSubjectToMIME(subject);
+	sendEmail(email, encodedSubject, emailContent);
+	res.status(201).send("success")
+})
 
 export const validateMail = asyncHandler(async (req, res, next) => {
 	const { email, token } = req.query;
