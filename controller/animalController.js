@@ -8,12 +8,16 @@ import { geocodeAddress } from "../utils/geoCode.js";
 // GET
 
 export const allDogs = asyncHandler(async (req, res, next) => {
-	const dogs = await Dogs.find().sort({ timestamp: -1 });
+	const data = await Dogs.find({}).populate("shelter").sort({ timestamp: -1 });
+	const dogs = data.filter((dog) => dog.shelter.mailValidated === true);
+
 	res.status(200).json(dogs);
 });
 
 export const allCats = asyncHandler(async (req, res, next) => {
-	const cats = await Cats.find().sort({ timestamp: -1 });
+	const data = await Cats.find().populate("shelter").sort({ timestamp: -1 });
+	const cats = data.filter((cat) => cat.shelter.mailValidated === true);
+
 	res.status(200).json(cats);
 });
 
@@ -54,8 +58,8 @@ export const filterDogs = asyncHandler(async (req, res, next) => {
 		query["characteristics.dogFriendly"] = true;
 	}
 	try {
-		const dogs = await Dogs.find(query).sort({ timestamp: -1 });
-
+		const data = await Dogs.find(query).populate('shelter').sort({ timestamp: -1 });
+const dogs = data.filter((dog) => dog.shelter.mailValidated === true);
 		res.status(200).json(dogs);
 	} catch (err) {
 		throw new ErrorResponse(err);
@@ -93,7 +97,8 @@ export const filterCats = asyncHandler(async (req, res, next) => {
 		query["characteristics.dogFriendly"] = true;
 	}
 	try {
-		const cats = await Cats.find(query).sort({ timestamp: -1 });
+		const data = await Cats.find(query).populate('shelter').sort({ timestamp: -1 });
+		const cats = data.filter((cat) => cat.shelter.mailValidated === true);
 		res.status(200).json(cats);
 	} catch (err) {
 		throw new ErrorResponse(err);

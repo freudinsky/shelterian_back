@@ -60,14 +60,16 @@ const shelterSchema = new mongoose.Schema({
 	},
 	emailValidationToken: {
 		type: String,
-		required: true
+		required: true,
+		select: false,
 	},
 	verified: {
-		type: String
+		type: String,
 	},
 	verificationDoc: {
-		type: String
-	}
+		type: String,
+		select: false,
+	},
 });
 
 shelterSchema.index({ location: "2dsphere" });
