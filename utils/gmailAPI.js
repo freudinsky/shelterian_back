@@ -17,9 +17,19 @@ export const sendEmail = (recipient, subject, emailContent) => {
 
 	const gmail = google.gmail({ version: "v1", auth: jwtClient });
 
+	function encodeSubjectToMIME(subject) {
+		const encodedSubject = `=?UTF-8?B?${Buffer.from(subject).toString(
+			"base64"
+		)}?=`;
+		return encodedSubject;
+	}
+
+	const encodedSubject = encodeSubjectToMIME(subject);
+	
+
 	const headers = {
 		To: recipient,
-		Subject: subject,
+		Subject: encodedSubject,
 		From: "Shelterian <info@shelterian.com>",
 		"Content-Type": "text/html; charset=utf-8",
 	};
@@ -52,4 +62,3 @@ export const sendEmail = (recipient, subject, emailContent) => {
 		}
 	);
 };
-

@@ -8,12 +8,6 @@ import crypto from "crypto";
 import { sendEmail } from "../utils/gmailAPI.js";
 import { emailHtml } from "../email/EmailValidation.js";
 
-function encodeSubjectToMIME(subject) {
-		const encodedSubject = `=?UTF-8?B?${Buffer.from(subject).toString(
-			"base64"
-		)}?=`;
-		return encodedSubject;
-	}
 //Registration
 
 export const signUp = asyncHandler(async (req, res, next) => {
@@ -32,7 +26,7 @@ export const signUp = asyncHandler(async (req, res, next) => {
 
 	const checkExisting = await Shelter.findOne({ name, email });
 	if (checkExisting) {
-		throw new ErrorResponse("Shelter already registered.", 409);
+		throw new ErrorResponse("Account existiert bereits.", 409);
 	}
 
 	const addr = `${address}, ${city}, ${country}`;
@@ -75,41 +69,39 @@ export const signUp = asyncHandler(async (req, res, next) => {
 		validationToken(email)
 	);
 	const subject = "Bestätigung deiner E-Mail-Adresse";
-	
 
-	const encodedSubject = encodeSubjectToMIME(subject);
-	sendEmail(email, encodedSubject, emailContent);
+	sendEmail(email, subject, emailContent);
 	res.status(201).send("success");
 });
 
-export const sendNewValidationLink = asyncHandler(async (req,res,next) => {
-	const {email} = req.query;
+export const sendNewValidationLink = asyncHandler(async (req, res, next) => {
+	const { email } = req.query;
 	const findShelter = await Shelter.findOne({ email }).select(
 		"+emailValidationToken"
 	);
-	if(!findShelter){
-		throw new ErrorResponse("Account nicht gefunden.", 404)
+	if (!findShelter) {
+		throw new ErrorResponse("Account nicht gefunden.", 404);
 	}
 
-	if(findShelter.mailValidated){
-		throw new ErrorResponse("E-Mail wurde bereits bestätigt.", 400)
+	if (findShelter.mailValidated) {
+		throw new ErrorResponse("E-Mail wurde bereits bestätigt.", 400);
 	}
 
-	const name = findShelter.name
-	const refPerson = findShelter.refPerson
+	const name = findShelter.name;
+	const refPerson = findShelter.refPerson;
 	const token = findShelter.emailValidationToken;
 	const emailContent = emailHtml(
 		refPerson || name,
 		refPerson ? name : "",
 		email,
-		token,
+		token
 	);
 
 	const subject = "Bestätigung deiner E-Mail-Adresse";
-	const encodedSubject = encodeSubjectToMIME(subject);
-	sendEmail(email, encodedSubject, emailContent);
-	res.status(201).send("success")
-})
+
+	sendEmail(email, subject, emailContent);
+	res.status(201).send("success");
+});
 
 export const validateMail = asyncHandler(async (req, res, next) => {
 	const { email, token } = req.query;
@@ -142,11 +134,11 @@ export const signIn = asyncHandler(async (req, res, next) => {
 
 	const checkExisting = await Shelter.findOne({ email }).select("+password");
 	if (!checkExisting) {
-		throw new ErrorResponse("Not registered yet!", 404);
+		throw new ErrorResponse("Noch nicht registriert!", 404);
 	}
 	const match = await bcrypt.compare(password, checkExisting.password);
 	if (!match) {
-		throw new ErrorResponse("Password wrong!", 401);
+		throw new ErrorResponse("Passwort falsch!", 401);
 	}
 
 	const cookie = jwt.sign({ uid: checkExisting._id }, process.env.JWT_SECRET);

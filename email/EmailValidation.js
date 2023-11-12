@@ -1,5 +1,3 @@
-
-
 export const emailHtml = (
 	referencePerson,
 	shelterName,

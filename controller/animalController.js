@@ -109,7 +109,7 @@ export const getDogById = asyncHandler(async (req, res, next) => {
 	const { id } = req.params;
 	const dog = await Dogs.findById(id).populate("shelter");
 	if (!dog) {
-		throw new ErrorResponse("Entry does not exist.", 404);
+		throw new ErrorResponse("Kein Eintrag gefunden.", 404);
 	}
 	res.status(200).json(dog);
 });
@@ -118,7 +118,7 @@ export const getCatById = asyncHandler(async (req, res, next) => {
 	const { id } = req.params;
 	const cat = await Cats.findById(id).populate("shelter");
 	if (!cat) {
-		throw new ErrorResponse("Entry does not exist.", 404);
+		throw new ErrorResponse("Kein Eintrag gefunden.", 404);
 	}
 	res.status(200).json(cat);
 });

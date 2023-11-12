@@ -101,7 +101,7 @@ export const updateShelterData = asyncHandler(async (req, res, next) => {
 
 	const shelterFind = await Shelter.findById(uid);
 	if (!shelterFind) {
-		throw new ErrorResponse("Entry does not exist.", 404);
+		throw new ErrorResponse("Kein Eintrag gefunden.", 404);
 	}
 	const updatedData = await Shelter.findByIdAndUpdate(uid, body, { new: true });
 	res.status(201).json(updatedData);
@@ -120,18 +120,18 @@ export const updatePassword = asyncHandler(async (req, res, next) => {
 	const passwordConfirm = await bcrypt.compare(oldPassword, shelter.password);
 
 	if (!passwordConfirm) {
-		throw new ErrorResponse("Incorrect Password!", 401);
+		throw new ErrorResponse("Falsches Passwort!", 401);
 	}
 
 	if (newPassword !== confirmPassword) {
-		throw new ErrorResponse("New passwords don't match.", 400);
+		throw new ErrorResponse("Neue Passwörter stimmen nicht überein.", 400);
 	}
 	const hashedPassword = await bcrypt.hash(newPassword, 10);
 
 	shelter.password = hashedPassword;
 	await shelter.save;
 
-	res.status(201).json({ success: "Password updated." });
+	res.status(201).json({ success: "Passwort aktualisiert." });
 });
 
 export const updateDog = asyncHandler(async (req, res, next) => {
@@ -161,10 +161,10 @@ export const updateDog = asyncHandler(async (req, res, next) => {
 	}
 
 	if (!foundDog) {
-		throw new ErrorResponse("Entry does not exist.", 404);
+		throw new ErrorResponse("Kein Eintrag gefunden.", 404);
 	}
 	if (uid != foundDog.shelter.toString())
-		throw new ErrorResponse("No permisson.", 401);
+		throw new ErrorResponse("Keine Berechtigung.", 401);
 
 	const update = {
 		$push: { images: { $each: newImages } },
@@ -209,10 +209,10 @@ export const updateCat = asyncHandler(async (req, res, next) => {
 		}
 	}
 	if (!foundCat) {
-		throw new ErrorResponse("Entry does not exist.", 404);
+		throw new ErrorResponse("Kein Eintrag gefunden.", 404);
 	}
 	if (uid !== foundCat.shelter.toString())
-		throw new ErrorResponse("No permission.", 401);
+		throw new ErrorResponse("Keine Berechtigung.", 401);
 
 	const update = {
 		$push: { images: { $each: newImages } },
@@ -242,7 +242,7 @@ export const deleteDog = asyncHandler(async (req, res, next) => {
 	}
 
 	if (foundDog.shelter.toString() !== uid) {
-		throw new ErrorResponse("Nicht erlaubt.", 401);
+		throw new ErrorResponse("Keine Berechtigung.", 401);
 	}
 
 	await Dogs.findByIdAndDelete(id);
@@ -262,7 +262,7 @@ export const deleteCat = asyncHandler(async (req, res, next) => {
 	}
 
 	if (foundCat.shelter.toString() !== uid) {
-		throw new ErrorResponse("Nicht erlaubt.", 401);
+		throw new ErrorResponse("Keine Berechtigung.", 401);
 	}
 
 	await Cats.findByIdAndDelete(id);
